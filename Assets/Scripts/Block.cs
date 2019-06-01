@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+
+    public Submarine structure;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -8,7 +8,8 @@ public class Submarine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject block = Instantiate(Resource.Load<GameObject>("Prefabs/BasicBlock"));
+        GameObject block = Instantiate(Resources.Load<GameObject>("Prefabs/BasicBlock"));
+        block.transform.position = this.transform.position;
         AddBlock(block);
 
     }
