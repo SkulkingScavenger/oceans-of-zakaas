@@ -7,8 +7,8 @@ public class MainCamera : MonoBehaviour
 	float yaw;
 	float pitch;
 	public Transform target = null;
-	float distance = 0.5f;
-	float height = 0.15f;
+	float distance = 10f;
+	float height = 11f;
 	float damping = 2.0f;
 	bool smoothRotation = true;
 	float rotationDamping = 3.0f;

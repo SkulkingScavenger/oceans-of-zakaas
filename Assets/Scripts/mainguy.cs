@@ -36,7 +36,6 @@ public class mainguy : MonoBehaviour
 		}
 
 		if(Input.GetAxis("Vertical") > 0){
-			
 		}
 
 		if(Input.GetAxis("Vertical") < 0){
@@ -46,11 +45,12 @@ public class mainguy : MonoBehaviour
 		if (characterController.isGrounded){
 			moveDirection = transform.forward;//new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 			//moveDirection = transform.TransformDirection(moveDirection);
-			moveDirection *= speed;
+			//moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+			characterController.Move(moveDirection * Time.deltaTime * speed);
 			//transform.LookAt(moveDirection);
 
 			if (Input.GetButton("Jump")){
-				moveDirection.y = jumpSpeed;
+				//moveDirection.y = jumpSpeed;
 			}
 		}
 
