@@ -7,7 +7,7 @@ public class MainCamera : MonoBehaviour
 	float yaw;
 	float pitch;
 	public Transform target = null;
-	float distance = 10f;
+	float distance = 1f;
 	float height = 11f;
 	float damping = 2.0f;
 	bool smoothRotation = true;
@@ -39,27 +39,6 @@ public class MainCamera : MonoBehaviour
 		}else{
 			//ThirdPersonView();
 		}
-
-		Vector3 wantedPosition = target.TransformPoint(0, height, -distance);
-		// check to see if there is anything behind the target
-		RaycastHit hit;
-		Vector3 back = target.transform.TransformDirection(-1 * Vector3.forward); 
-		// cast the bumper ray out from rear and check to see if there is anything behind
-		int layerMask = 1 << 2;
-		if (Physics.Raycast(target.TransformPoint(bumperRayOffset), back, out hit, bumperDistanceCheck, layerMask)){
-			wantedPosition.x = hit.point.x;
-			wantedPosition.z = hit.point.z;
-			wantedPosition.y = Mathf.Lerp(hit.point.y + bumperCameraHeight, wantedPosition.y, Time.deltaTime * damping);
-		}
-		transform.position = Vector3.Lerp(transform.position, wantedPosition, Time.deltaTime * damping);
-		Vector3 lookPosition = target.TransformPoint(targetLookAtOffset);
-		if(smoothRotation){
-			Quaternion wantedRotation = Quaternion.LookRotation(lookPosition - transform.position, target.up);
-			transform.rotation = Quaternion.Slerp(transform.rotation, wantedRotation, Time.deltaTime * rotationDamping);
-		}else{
-			transform.rotation = Quaternion.LookRotation(lookPosition - target.position, target.up);
-		}
-
 	}
 
 	void ThirdPersonView(){
