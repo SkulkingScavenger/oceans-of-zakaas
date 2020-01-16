@@ -22,8 +22,8 @@ public class mainguy : MonoBehaviour
 	{
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		mainCamera.transform.position = transform.position;
-		mainCamera.transform.Translate(transform.forward * -6);
-		mainCamera.transform.Translate(transform.up * 1.5f);
+		mainCamera.transform.Translate(transform.forward * -3);
+		mainCamera.transform.Translate(transform.up * 1.2f);
 		creature = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Zakasi")).GetComponent<Creature>();
 		creature.transform.position = transform.position;
 	}
@@ -36,16 +36,15 @@ public class mainguy : MonoBehaviour
 	void Movement(){
 		//move the creature
 		CreatureMovement();
-
 		//if the creature is out of range, move the camera
 		CameraMovement();
-
-
-
-
 	}
 
+	
 	void CameraMovement(){
+
+		cameraOrbit();
+
 		
 		//if creature goes to far away along the camera axis (off into the horizon) follow it. 
 		//also back off if it gets too close
@@ -64,41 +63,42 @@ public class mainguy : MonoBehaviour
 		d = d * c.magnitude; //that's right
 		
 		
-		if(d > 2f){
-			transform.Translate(transform.forward * (d - 2));
+		if(d > 1f){
+			transform.Translate(transform.forward * (d - 1));
 		}
-		if(d < -2f){
-			transform.Translate(transform.forward * (d + 2));
+		if(d < -1f){
+			transform.Translate(transform.forward * (d + 1));
 		}
 
 		//if the character starts to go off the screen in one direction or the other, scoot around to face it
 		a = new Vector2(transform.right.x, transform.right.z);
 		float w = Vector2.Dot(b,a);
 		w = w * c.magnitude;
-		if(w > 4f){
-			transform.Translate(transform.right * (w - 4));
+		if(w > 2f){
+			transform.Translate(transform.right * (w - 2));
 		}
-		if(w < -4f){
-			transform.Translate(transform.right * (w + 4));
+		if(w < -2f){
+			transform.Translate(transform.right * (w + 2));
 		}
+	}
 
-
+	void cameraOrbit(){
 		//orbit around if mouse at camera edge
 		Camera camera = mainCamera.GetComponent<Camera>();
 		Vector3 mousePosition = camera.ScreenToViewportPoint(Input.mousePosition);
+		float theta = 0;
 		if(mousePosition.x < 0.1f){
-			Debug.Log("detected at left!");
+			theta = 30;
 		}
 		if(mousePosition.x > 0.9f){
-			Debug.Log("detected at right!");
+			theta = -30;
 		}
+		transform.RotateAround(creature.transform.position, transform.up, theta*Time.deltaTime);
 		// float mouseX = Input.GetAxis("Mouse X");
 		// Debug.Log(mouseX);
 		// if (mouseX < 10){
 		// 	transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y + 10*Time.deltaTime,transform.eulerAngles.z);
 		// }
-
-		
 	}
 
 	void CreatureMovement(){
@@ -130,14 +130,20 @@ public class mainguy : MonoBehaviour
 		}
 
 		Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-		//move = alignVectorToCameraAxis(move);
+		if(move != Vector3.zero){
+			Debug.Log(Vector2.SignedAngle(new Vector2(move.x,move.z),new Vector2(transform.forward.x,transform.forward.z)));
+			//Debug.Log(move);
+			move = alignVectorToCameraAxis(move);
+			//Debug.Log(move);
+		}
+		
 		creature.characterController.Move(move * Time.deltaTime * 1);
 
 		if (move != Vector3.zero){
 			creature.transform.forward = move;
 		}
 
-		Debug.Log(transform.forward);
+		this.transform.position = creature.transform.position;
 
 	}
 
@@ -152,14 +158,32 @@ public class mainguy : MonoBehaviour
 		float finalAngle;
 		float x,z;
 
-		x = Vector2.Dot(c,a); //cos (x component) of the angle between the two rays
-		angleAdjustAmount = Mathf.Acos(x);
+		float cameraAngle = Vector2.SignedAngle(a,c);
+		float worldAngle = 0f;
+		float vecAngle = Vector2.SignedAngle(b,c);
+		Debug.Log("cameraAngle:" + cameraAngle.ToString());
+		Debug.Log("worldAngle:" + worldAngle.ToString());
+		Debug.Log("vecAngle:" + vecAngle.ToString());
 
-		x = Vector2.Dot(c,b);
-		finalAngle = Mathf.Acos(x) + angleAdjustAmount;
-		z = Mathf.Sin(finalAngle);
+		angleAdjustAmount = Vector2.SignedAngle(a,c);
+		Debug.Log("angleAdjustAmount:" + angleAdjustAmount.ToString());
+		Debug.Log(Vector2.SignedAngle(b,c));
+		finalAngle = -1*(Vector2.SignedAngle(b,c) + angleAdjustAmount) + 90;
+		Debug.Log("finalAngle:" + finalAngle.ToString());
+		z = Mathf.Sin(degToRad(finalAngle));
+		x = Mathf.Cos(degToRad(finalAngle));
+		Vector3 output = new Vector3(x, 0f, z);
+		output.Normalize();
 
-		return (new Vector3(x, 0f, z) * vec.magnitude);
+		return (output * vec.magnitude);
+	}
+
+	float radToDeg(float rad){
+		return (rad*180)/Mathf.PI;
+	}
+
+	float degToRad(float deg){
+		return (deg/180)*Mathf.PI;
 	}
 
 }
