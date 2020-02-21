@@ -9,7 +9,7 @@ public class mainguy : MonoBehaviour
 	Creature creature;
 
 	Vector3 positionPrevious;
-	public float speed = 6.0f;
+	public float speed = 16.0f;
 	public float jumpSpeed = 8.0f;
 	public float gravity = 20.0f;
 	public Vector3 moveDirection = Vector3.zero;
@@ -24,7 +24,7 @@ public class mainguy : MonoBehaviour
 		mainCamera.transform.position = transform.position;
 		mainCamera.transform.Translate(transform.forward * -3);
 		mainCamera.transform.Translate(transform.up * 1.2f);
-		creature = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Zakasi")).GetComponent<Creature>();
+		creature = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/SimpleCharacter")).GetComponent<Creature>();
 		creature.transform.position = transform.position;
 	}
 
@@ -119,15 +119,15 @@ public class mainguy : MonoBehaviour
 		}
 		
 
-		Transform groundChecker = creature.transform.Find("groundSensor");
-		float groundDistance = 1;
-		bool isGrounded = Physics.CheckSphere(groundChecker.position, groundDistance, 8, QueryTriggerInteraction.Ignore);
-		float gravity = 1f;
-		float yVelocity = 0;
-		yVelocity += gravity * Time.deltaTime;
-		if (isGrounded && yVelocity < 0){
-			yVelocity = 0f;
-		}
+		// Transform groundChecker = creature.transform.Find("groundSensor");
+		// float groundDistance = 1;
+		// bool isGrounded = Physics.CheckSphere(groundChecker.position, groundDistance, 8, QueryTriggerInteraction.Ignore);
+		// float gravity = 1f;
+		// float yVelocity = 0;
+		// yVelocity += gravity * Time.deltaTime;
+		// if (isGrounded && yVelocity < 0){
+		// 	yVelocity = 0f;
+		// }
 
 		Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 		if(move != Vector3.zero){

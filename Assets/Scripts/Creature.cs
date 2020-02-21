@@ -17,7 +17,7 @@ public class Creature : MonoBehaviour{
 
 
 	//Movement
-	public CharacterController characterController;
+	public SimpleCharacterController characterController;
 	public float jumpForce = 0.03f;			// Amount of force added when the player jumps.
 	public float gravityForce = -0.0008f;	// Amount of force added when the player is in the air.
 	private bool grounded = true;			// Whether or not the player is grounded.
@@ -41,7 +41,7 @@ public class Creature : MonoBehaviour{
 
 	// Start is called before the first frame update
 	void Start() {
-		characterController = gameObject.GetComponent<CharacterController>();
+		characterController = gameObject.GetComponent<SimpleCharacterController>();
 	}
 
 	// Update is called once per frame
